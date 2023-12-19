@@ -2,6 +2,8 @@ use std::ops::{Index,IndexMut,Mul,MulAssign,Div,DivAssign,Sub,SubAssign,Add,AddA
 use std::slice::SliceIndex;                                         
 use std::marker::Copy;
 use std::fmt::{Display,Debug,Formatter,Result};
+#[cfg(feature = "fractions")]
+use my_fractions::MyFraction;
 
 #[derive(Debug, Clone, Copy)]
 pub struct MyArr<T, const N: usize> {
@@ -65,6 +67,36 @@ where
         temp
     }
 }
+#[cfg(feature = "fractions")]
+impl<T, const N: usize> Mul<MyArr<T, N>> for MyFraction
+where
+    T: Mul<MyFraction, Output = T> + Copy + Debug,
+{
+    type Output = MyArr<T, N>;
+
+    fn mul(self, rhs: MyArr<T, N>) -> MyArr<T, N> {
+        let mut temp = rhs;
+        for i in 0..N {
+            temp[i] = temp[i] * self;
+        }
+        temp
+    }
+}
+#[cfg(feature = "fractions")]
+impl<T, const N: usize> Mul<MyFraction> for MyArr<T, N>
+where
+    T: Mul<MyFraction, Output = T> + Copy + Debug,
+{
+    type Output = MyArr<T, N>;
+
+    fn mul(self, rhs: MyFraction) -> MyArr<T, N> {
+        let mut temp = self;
+        for i in 0..N {
+            temp[i] = temp[i] * rhs;
+        }
+        temp
+    }
+}
 
 impl<T, const N: usize> Add<MyArr<T, N>> for MyArr<T, N>
 where
@@ -117,7 +149,6 @@ where
         temp
     }
 }
-// MyArr * i64
 impl<T, const N: usize> Div<i64> for MyArr<T, N>
 where
     T: Div<i64, Output = T> + Copy + Debug,

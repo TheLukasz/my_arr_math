@@ -6,3 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+my_fractions = {path = "/home/mr_platypus/Documents/Code/Rust-Projects/libs/my_fractions",optional=true}
+# my_fractions = {path = "/home/mr_platypus/Documents/Code/Rust-Projects/libs/my_fractions"}
+
+[features]
+fractions = ["dep:my_fractions"]
